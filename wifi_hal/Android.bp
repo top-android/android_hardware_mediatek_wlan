@@ -1,0 +1,31 @@
+// Fix: define libwifi-hal-mt66xx in Android.bp so soong bootstrap can see it
+// (it was only declared in Android.mk, which soong bootstrap does not read).
+
+cc_library_static {
+    name: "libwifi-hal-mt66xx",
+    proprietary: true,
+    owner: "mtk",
+    srcs: [
+        "wifi_hal.cpp",
+        "common.cpp",
+        "cpp_bindings.cpp",
+        "wifi_logger.cpp",
+        "wifi_offload.cpp",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+        "-Wno-int-to-pointer-cast",
+        "-Wno-maybe-uninitialized",
+        "-Wno-parentheses",
+    ],
+    cppflags: ["-Wno-conversion-null"],
+    include_dirs: [
+        "external/libnl/include",
+        "external/wpa_supplicant_8/src/drivers",
+        "hardware/libhardware_legacy/include/hardware_legacy",
+    ],
+    shared_libs: [
+        "libutils",
+        "liblog",
+    ],
+}
