@@ -1,0 +1,8 @@
+// Fix: provide the libwifi-hal-mediatek cc_defaults expected by
+// frameworks/opt/net/wifi/libwifi_hal/Android.bp (MediaTek config).
+// The real static library is libwifi-hal-mt66xx defined in wifi_hal/Android.bp
+
+cc_defaults {
+    name: "libwifi-hal-mediatek",
+    whole_static_libs: ["libwifi-hal-mt66xx"],
+}
