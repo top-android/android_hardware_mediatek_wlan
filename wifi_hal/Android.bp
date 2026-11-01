@@ -23,6 +23,9 @@ cc_library_static {
         "external/libnl/include",
         "external/wpa_supplicant_8/src/drivers",
         "hardware/libhardware_legacy/include/hardware_legacy",
+        // A15: wifi_hal.h + gscan/wifi_logger/wifi_offload 等 legacy 头已从
+        // libhardware_legacy 迁到 hardware/interfaces/wifi/legacy_headers（cannon A15 适配）
+        "hardware/interfaces/wifi/legacy_headers/include/hardware_legacy",
     ],
     shared_libs: [
         "libutils",

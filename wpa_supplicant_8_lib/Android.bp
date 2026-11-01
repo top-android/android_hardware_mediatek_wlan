@@ -1,0 +1,49 @@
+// Fix (A15 / lineage-22.2):
+// lib_driver_cmd_mt66xx 原本只在 Android.mk 里定义为 BUILD_STATIC_LIBRARY。
+// A15 起 hostapd / wpa_supplicant 已是 soong 模块，通过 soong_config 变量
+// board_hostapd_private_lib / board_wpa_supplicant_private_lib（值 =
+// lib_driver_cmd_mt66xx，来自 BoardConfig.mk）把本库注进 static_libs，
+// 而 soong bootstrap 只读 .bp 不读 .mk → 必须在此提供 soong 定义。
+// 与 A14 对 wifi_hal/libwifi-hal-mt66xx 的修法完全一致
+// （Android.mk 里同名模块已改名 -legacy 以避免与本节 soong 模块冲突）。
+// 编译参数对齐原 Android.mk：仅 -DCONFIG_ANDROID_LOG（arm 追加 -mabi=aapcs-linux），
+// 头文件包含 = WPA_SUPPL_DIR_INCLUDE + external/libnl/include。
+cc_library_static {
+    name: "lib_driver_cmd_mt66xx",
+    proprietary: true,
+    owner: "mtk",
+    srcs: [
+        "mediatek_driver_cmd_nl80211.c",
+    ],
+    cflags: [
+        "-DCONFIG_ANDROID_LOG",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-unused-variable",
+        "-Wno-implicit-function-declaration",
+        // A15: bionic linux/wireless.h 已定义 IW_PMKID_LEN，MTK 私有头重复定义(同值) → 抑制 -Werror=-Wmacro-redefined
+        "-Wno-macro-redefined",
+    ],
+    include_dirs: [
+        "external/libnl/include",
+        "external/wpa_supplicant_8/src",
+        "external/wpa_supplicant_8/src/common",
+        "external/wpa_supplicant_8/src/drivers",
+        "external/wpa_supplicant_8/src/l2_packet",
+        "external/wpa_supplicant_8/src/utils",
+        "external/wpa_supplicant_8/src/wps",
+        "external/wpa_supplicant_8/wpa_supplicant",
+    ],
+    shared_libs: [
+        "libc",
+        "libcutils",
+        "libnl",
+    ],
+    arch: {
+        arm: {
+            cflags: [
+                "-mabi=aapcs-linux",
+            ],
+        },
+    },
+}
