@@ -60,7 +60,9 @@ endif
 ########################
 include $(CLEAR_VARS)
 LOCAL_SANITIZE := cfi
-LOCAL_MODULE := lib_driver_cmd_mt66xx
+# A15: 静态库改由同级 Android.bp 的 cc_library_static 提供（soong 看不到 .mk）；
+# 这里同名模块改名 -legacy 以免与 soong 模块重名冲突（同 wifi_hal 步 15 做法）。
+LOCAL_MODULE := lib_driver_cmd_mt66xx-legacy
 LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_OWNER := mtk
 LOCAL_SHARED_LIBRARIES := libc libcutils

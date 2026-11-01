@@ -13,8 +13,8 @@
 #include <netlink/object-api.h>
 #include <netlink/netlink.h>
 #include <netlink/socket.h>
-#include <netlink-private/object-api.h>
-#include <netlink-private/types.h>
+// A15: external/libnl 升到 25Q1 后删除了私有头目录；
+// 本文件未使用任何 netlink 私有符号（已核），冗余 include 移除（cannon A15 适配）。
 
 #include "nl80211_copy.h"
 #include "sync.h"
