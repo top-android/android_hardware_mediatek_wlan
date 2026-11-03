@@ -362,7 +362,7 @@ static int wpa_driver_nl80211_testmode(void *priv, const u8 *data, size_t data_l
     params = (struct wpa_driver_testmode_params *)data;
 
     /* Mask version field */
-    index = params->hdr.index & BITS(0, 23);
+    index = params->hdr.index & 0xFFFFFF /* BITS(0,23)：低24位掩码。新版 wpa_supplicant common.h 把 BITS 定义为3参，冲突，故展开 */;
 
     switch(index) {
         case NL80211_TESTMODE_STATISTICS:
