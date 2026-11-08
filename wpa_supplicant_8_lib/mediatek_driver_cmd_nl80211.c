@@ -532,11 +532,19 @@ extern int wpa_config_write(const char *name, struct wpa_config *config);
 static int wpa_driver_mediatek_set_country(void *priv, const char *alpha2_arg)
 {
     struct i802_bss *bss = priv;
-    struct wpa_driver_nl80211_data *drv = bss->drv;
+    struct wpa_driver_nl80211_data *drv;
     int ioctl_sock = -1;
     struct iwreq iwr;
     int ret = -1;
     char buf[11];
+    /* [cannon] AIDL setCountryCode 可能传入 drv==NULL 的接口上下文，
+     * os_strlcpy 解引用 SEGV → wpa_supplicant 崩溃 → WiFi 自动关闭。
+     * 防御后返回失败，框架稍后重试国家码。 */
+    if (bss == NULL || bss->drv == NULL || bss->drv->first_bss == NULL || alpha2_arg == NULL) {
+        wpa_printf(MSG_ERROR, "%s: invalid state", __func__);
+        return -1;
+    }
+    drv = bss->drv;
 #ifdef MTK_TC1_FEATURE
     char replace_ifname[IFNAMSIZ+1];
 
